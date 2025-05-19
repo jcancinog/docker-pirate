@@ -64,7 +64,7 @@ pipeline {
               // Execute the SonarQube scanner with desired flags
               sh "${scannerHome}/bin/sonar-scanner \
                           -Dsonar.projectKey=SimpleExpressExample:Test \
-                          -Dsonar.scanner.opts="${SONAR_SCANNER_OPTS}" \
+                          -Dsonar.scanner.opts=${SONAR_SCANNER_OPTS} \
                           -Dsonar.projectName=SimpleExpressExample \
                           -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
                           -Dsonar.host.url=http://mysonarqube:9000 \
