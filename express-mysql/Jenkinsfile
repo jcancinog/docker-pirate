@@ -56,7 +56,6 @@ pipeline {
           environment {
             // Previously defined in the Jenkins "Global Tool Configuration"
             scannerHome = tool 'sonar-scanner'
-            SONAR_SCANNER_OPTS = "-Xmx512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED"
           }
           steps {
             // "sonarqube" is the server configured in "Configure System"
@@ -64,7 +63,6 @@ pipeline {
               // Execute the SonarQube scanner with desired flags
               sh "${scannerHome}/bin/sonar-scanner \
                           -Dsonar.projectKey=SimpleExpressExample:Test \
-                          -Dsonar.scanner.opts=${SONAR_SCANNER_OPTS} \
                           -Dsonar.projectName=SimpleExpressExample \
                           -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
                           -Dsonar.host.url=http://mysonarqube:9000 \
