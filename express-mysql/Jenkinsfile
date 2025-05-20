@@ -61,19 +61,22 @@ pipeline {
             // "sonarqube" is the server configured in "Configure System"
             withSonarQubeEnv('sonarqube') {
               // Execute the SonarQube scanner with desired flags
-              sh export SONAR_SCANNER_OPTS='--add-opens=java.base/java.lang=ALL-UNNAMED -Xmx2048m' "${scannerHome}/bin/sonar-scanner \
-                          -Dsonar.projectKey=SimpleExpressExample:Test \
-                          -Dsonar.projectName=SimpleExpressExample \
-                          -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
-                          -Dsonar.sourceEncoding=UTF-8 \
-                          -Dsonar.host.url=http://mysonarqube:9000 \
-                          -Dsonar.sources=./${PROJECT_ROOT}/app.js,./${PROJECT_ROOT}/config/db.config.js,./${PROJECT_ROOT}/routes/developers.js \
-                          -Dsonar.login=admin \
-                          -Dsonar.password=admin \
-                          -Dsonar.tests=./${PROJECT_ROOT}/test \
-                          -Dsonar.verbose=true \
-                          -Dsonar.javascript.node.maxspace=4096 \
-                          -Dsonar.javascript.lcov.reportPaths=./${PROJECT_ROOT}/coverage/lcov.info"
+      sh """
+        export SONAR_SCANNER_OPTS='--add-opens=java.base/java.lang=ALL-UNNAMED -Xmx2048m'
+        ${scannerHome}/bin/sonar-scanner \
+          -Dsonar.projectKey=SimpleExpressExample:Test \
+          -Dsonar.projectName=SimpleExpressExample \
+          -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
+          -Dsonar.sourceEncoding=UTF-8 \
+          -Dsonar.host.url=http://mysonarqube:9000 \
+          -Dsonar.sources=./${PROJECT_ROOT}/app.js,./${PROJECT_ROOT}/config/db.config.js,./${PROJECT_ROOT}/routes/developers.js \
+          -Dsonar.login=admin \
+          -Dsonar.password=admin \
+          -Dsonar.tests=./${PROJECT_ROOT}/test \
+          -Dsonar.verbose=true \
+          -Dsonar.javascript.node.maxspace=4096 \
+          -Dsonar.javascript.lcov.reportPaths=./${PROJECT_ROOT}/coverage/lcov.info
+      """
                           
             }
             timeout(time: 3, unit: 'MINUTES') {
