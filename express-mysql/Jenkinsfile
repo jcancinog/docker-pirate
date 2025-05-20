@@ -12,13 +12,14 @@ pipeline {
 
   tools {
       nodejs 'nodejs'
+      jdk 'jdk11'
   }
 
   environment {
       // General Variables for Pipeline
       PROJECT_ROOT = 'express-mysql/app'
-      EMAIL_ADDRESS = 'san99tiagodevsecops@gmail.com'
-      REGISTRY = 'san99tiago/docker-pirate-express'
+      EMAIL_ADDRESS = 'jcancinog@gmail.com'
+      REGISTRY = 'jcancinog/docker-pirate-express'
   }
 
   stages {
@@ -32,7 +33,7 @@ pipeline {
       stage('Checkout') {
         steps {
         // Get Github repo using Github credentials (previously added to Jenkins credentials)
-        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/san99tiago/docker-pirate']]])        }
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/jcancinog/docker-pirate']]])        }
       }
       stage('Install dependencies') {
         steps {
@@ -56,21 +57,27 @@ pipeline {
           environment {
             // Previously defined in the Jenkins "Global Tool Configuration"
             scannerHome = tool 'sonar-scanner'
+            SONAR_SCANNER_OPTS = "-Xmx512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED"
           }
           steps {
             // "sonarqube" is the server configured in "Configure System"
-            withSonarQubeEnv('sonarqube') {
+            withSonarQubeEnv('mysonarqube') {
               // Execute the SonarQube scanner with desired flags
               sh "${scannerHome}/bin/sonar-scanner \
                           -Dsonar.projectKey=SimpleExpressExample:Test \
+                          -Dsonar.scanner.opts="${SONAR_SCANNER_OPTS}" \
                           -Dsonar.projectName=SimpleExpressExample \
                           -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
+                          -Dsonar.sourceEncoding=UTF-8 \
                           -Dsonar.host.url=http://mysonarqube:9000 \
                           -Dsonar.sources=./${PROJECT_ROOT}/app.js,./${PROJECT_ROOT}/config/db.config.js,./${PROJECT_ROOT}/routes/developers.js \
                           -Dsonar.login=admin \
                           -Dsonar.password=admin \
                           -Dsonar.tests=./${PROJECT_ROOT}/test \
+                          -Dsonar.verbose=true \
+                          -Dsonar.javascript.node.maxspace=4096 \
                           -Dsonar.javascript.lcov.reportPaths=./${PROJECT_ROOT}/coverage/lcov.info"
+                          
             }
             timeout(time: 3, unit: 'MINUTES') {
               // In case of SonarQube failure or direct timeout exceed, stop Pipeline
