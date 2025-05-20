@@ -8,15 +8,10 @@ def qualityGateValidation(qg) {
   return false
 }
 pipeline {
-  agent {
-    docker {
-      image 'adoptopenjdk/openjdk11:jdk-11.0.11_9-alpine' // Java 11 LTS
-    }
-  }
+  agent any
 
   tools {
       nodejs 'nodejs'
-      jdk 'jdk11'
   }
 
   environment {
@@ -61,15 +56,13 @@ pipeline {
           environment {
             // Previously defined in the Jenkins "Global Tool Configuration"
             scannerHome = tool 'sonar-scanner'
-            SONAR_SCANNER_OPTS = "-Xmx512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED"
-          }
+            }
           steps {
             // "sonarqube" is the server configured in "Configure System"
             withSonarQubeEnv('mysonarqube') {
               // Execute the SonarQube scanner with desired flags
               sh "${scannerHome}/bin/sonar-scanner \
                           -Dsonar.projectKey=SimpleExpressExample:Test \
-                          -Dsonar.scanner.opts="${SONAR_SCANNER_OPTS}" \
                           -Dsonar.projectName=SimpleExpressExample \
                           -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
                           -Dsonar.sourceEncoding=UTF-8 \
