@@ -8,7 +8,11 @@ def qualityGateValidation(qg) {
   return false
 }
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'adoptopenjdk/openjdk11:jdk-11.0.11_9-alpine' // Java 11 LTS
+    }
+  }
 
   tools {
       nodejs 'nodejs'
