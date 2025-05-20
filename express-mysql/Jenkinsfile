@@ -61,7 +61,7 @@ pipeline {
             // "sonarqube" is the server configured in "Configure System"
             withSonarQubeEnv('sonarqube') {
               // Execute the SonarQube scanner with desired flags
-              sh "${scannerHome}/bin/sonar-scanner \
+              sh export SONAR_SCANNER_OPTS='--add-opens=java.base/java.lang=ALL-UNNAMED -Xmx2048m' "${scannerHome}/bin/sonar-scanner \
                           -Dsonar.projectKey=SimpleExpressExample:Test \
                           -Dsonar.projectName=SimpleExpressExample \
                           -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
